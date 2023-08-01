@@ -52,7 +52,7 @@ Drawing4.Transparency = 1
 
 RunService.RenderStepped:Connect(function()
     --skidded this part :/ (idk how Hue works)
-    HueOffset = (HueOffset + 0.001) % 1)
+    HueOffset = (HueOffset + 0.001) % 1
     local rainbowColor = Color3.fromHSV(HueOffset, 1, 1)
     Drawing1.Color = rainbowColor
     Drawing2.Color = rainbowColor
