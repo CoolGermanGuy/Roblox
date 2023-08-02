@@ -29,10 +29,10 @@ Drawing2.Visible = true
 Drawing2.Color = Color3.fromRGB(1,1,1)
 Drawing2.Transparency = 1
 --                             |        X       |       Y            |
-Drawing3.PointA = Vector2.new(0.884 * (VPS.X / 2), 0.55 * (VPS.Y / 2))
-Drawing3.PointB = Vector2.new(1.116 * (VPS.X / 2), 0.55 * (VPS.Y / 2))
-Drawing3.PointC = Vector2.new(1.116 * (VPS.X / 2), 1.55 * (VPS.Y / 2))
-Drawing3.PointD = Vector2.new(0.884 * (VPS.X / 2), 1.55 * (VPS.Y / 2))
+Drawing3.PointA = Vector2.new(0.883 * (VPS.X / 2), 0.55 * (VPS.Y / 2))
+Drawing3.PointB = Vector2.new(1.117 * (VPS.X / 2), 0.55 * (VPS.Y / 2))
+Drawing3.PointC = Vector2.new(1.117 * (VPS.X / 2), 1.55 * (VPS.Y / 2))
+Drawing3.PointD = Vector2.new(0.883 * (VPS.X / 2), 1.55 * (VPS.Y / 2))
 Drawing3.Thickness = 4
 Drawing3.Filled = true
 Drawing3.Visible = true
