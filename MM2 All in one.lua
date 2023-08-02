@@ -11,13 +11,19 @@ noclip_key = "X"
 
 
 --variables
-local cache = {}
 local gundrop
 local noclip = false
 local camera = workspace.CurrentCamera
 local RunService = game:GetService("RunService")
 local GuiInset = game:GetService("GuiService"):GetGuiInset()
-local Y75 = (0.75 * camera.ViewportSize.Y)
+local VPS = camera.ViewportSize
+local Y75 = (0.75 * VPS.Y)
+
+local Line = Drawing.new("Line")
+Line.From = Vector2.new(VPS.X / 2, 0.75 * Y75)
+Line.Visible = false
+Line.Color = Color3.fromRGB(0,0,255)
+Line.To = Vector2.new(0,0)
 
 
 local UserInputService = Game:GetService('UserInputService')
@@ -93,40 +99,37 @@ functions = {
     end,
 }
 
-workspace.DescendantAdded:Connect(function(obj)
-    if obj.Name == "GunDrop" then
-        gundrop = obj
-        local highlight = Instance.new("Highlight")
-        highlight.OutlineColor = Color3.fromRGB(0,255,0)
-        highlight.Parent = obj
-        local Line = Drawing.new("Line")
-        Line.From = Vector2.new(MiddleX, Y75)
-        Line.Color = Color3.fromRGB(0,255,0)
-        Line.Thickness = 3
-        Line.Visible = true
-        Line.Transparency = 1
-        cache["GunLine"] = Line
-    end
-end)
-
-workspace.DescendantRemoving:Connect(function(obj)
-    if obj.Name == "GunDrop" then
-        cache["GunLine"]:Destroy()
-    end
-end)
-
 UserInputService.InputEnded:Connect(function(input, gameProcessed)
     if input.KeyCode and functions[UserInputService:GetStringForKeyCode(input.KeyCode)] and not gameProcessed then
         functions[UserInputService:GetStringForKeyCode(input.KeyCode)]()
     end
 end)
 
+------------------------------------------------------------------------------------------------------------------------------------
+workspace.DescendantAdded:Connect(function(obj)
+    task.wait(0.01)
+    if obj.Name == "GunDrop" then
+        local high = Instance.new("Highlight")
+        high.FillTransparency = 1
+        high.OutlineColor = Color3.fromRGB(0,0,255)
+        high.Parent = obj
+
+        Line.Visible = true
+        gundrop = obj
+    end
+end)
+------------------------------------------------------------------------------------------------------------------------------------
+workspace.DescendantRemoving:Connect(function(obj)
+    if obj.Name == "GunDrop" then
+        gundrop = nil
+        Line.Visible = false
+    end
+end)
+------------------------------------------------------------------------------------------------------------------------------------
 RunService.RenderStepped:Connect(function()
-    if cache["GunLine"] then
-        local screenPosition, isOnScreen = workspace.CurrentCamera:WorldToScreenPoint(gundrop)
-        if isOnScreen then
-            local screenVector = Vector2.new(screenPosition.X, screenPosition.Y + GuiInset.Y)
-            cache["GunLine"].To = screenVector
-        end
+    if gundrop then
+        local screenPosition, isOnScreen = workspace.CurrentCamera:WorldToScreenPoint(gundrop.Position)
+        local screenVector = Vector2.new(screenPosition.X, screenPosition.Y + GuiInset.Y)
+        Line.To = screenVector
     end
 end)
