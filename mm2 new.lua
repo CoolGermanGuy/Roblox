@@ -16,7 +16,6 @@ player_esp_key = "P"
 -- Usual Variables
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
-local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 local camera = workspace.CurrentCamera
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -70,35 +69,35 @@ functions = {
     end,
     [gun_and_back_key] = function()
         if GunDropCFrame then
-            local ogcframe = Character.HumanoidRootPart.CFrame
-            Character.HumanoidRootPart.CFrame = GunDropCFrame
+            local ogcframe = LocalPlayer.Character.HumanoidRootPart.CFrame
+            LocalPlayer.Character.HumanoidRootPart.CFrame = GunDropCFrame
             task.wait(0.2)
-            Character.HumanoidRootPart.CFrame = ogcframe
+            LocalPlayer.Character.HumanoidRootPart.CFrame = ogcframe
         end
     end,
     [gun_key] = function()
         if GunDropCFrame then
-            Character.HumanoidRootPart.CFrame = GunDropCFrame
+            LocalPlayer.Character.HumanoidRootPart.CFrame = GunDropCFrame
         end
     end,
     [fake_lag_key] = function()
         print("this doesnt work at all!")
-        Character.HumanoidRootPart.Anchored = not Character.HumanoidRootPart.Anchored
+        LocalPlayer.Character.HumanoidRootPart.Anchored = not LocalPlayer.Character.HumanoidRootPart.Anchored
     end,
     [walkspeed_19] = function()
-        Character.Humanoid.WalkSpeed = 19
+        LocalPlayer.Character.Humanoid.WalkSpeed = 19
     end,
     [walkspeed_16] = function()
-        Character.Humanoid.WalkSpeed = 16
+        LocalPlayer.Character.Humanoid.WalkSpeed = 16
     end,
     [noclipBool_key] = function()
         noclipBool = not noclipBool
         if noclipBool then
-            Character.UpperTorso.CanCollide = false
-            Character.LowerTorso.CanCollide = false
+            LocalPlayer.Character.UpperTorso.CanCollide = false
+            LocalPlayer.Character.LowerTorso.CanCollide = false
         elseif not noclipBool then
-            Character.UpperTorso.CanCollide = true
-            Character.LowerTorso.CanCollide = true
+            LocalPlayer.Character.UpperTorso.CanCollide = true
+            LocalPlayer.Character.LowerTorso.CanCollide = true
         end
     end,
     [player_esp_key] = function()
@@ -251,7 +250,7 @@ RunService.RenderStepped:Connect(function()
         end
     end
     
-    for i, v in ipairs(Character:GetDescendants()) do
+    for i, v in ipairs(LocalPlayer.Character:GetDescendants()) do
         if noclipBool and v:IsA("BasePart") and v.CanCollide == true then
             v.CanCollide = false
         end
