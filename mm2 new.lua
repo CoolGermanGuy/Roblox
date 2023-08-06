@@ -261,8 +261,8 @@ ReplicatedStorage.Remotes.Gameplay.GameOver.OnClientEvent:Connect(function()
     GunDropCFrame = nil
     GunDropVec3 = nil
     GunDropLine.Visible = false
-    for index, value in ipairs(alivePlayers) do
-        value = nil
+    for i = 1, #alivePlayers do
+        table.remove(alivePlayers, i)
     end
 end)
 
@@ -283,7 +283,12 @@ ReplicatedStorage.Remotes.Gameplay.RoleSelect.OnClientEvent:Connect(function()
     for i, v in ipairs(game.Players:GetPlayers()) do
         table.insert(alivePlayers, v)
         v.Character.Humanoid.Died:Connect(function()
-            table.remove(alivePlayers, v)
+            for index = 1, #alivePlayers do
+                if alivePlayers[index].Name == v.Name then                       
+                    table.remove(alivePlayers, index)
+                    break
+                end
+            end
             HighlightCollection[v.Name].Enabled = false
             LineCollection[v.Name].Visible = false
         end)
