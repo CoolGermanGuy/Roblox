@@ -134,10 +134,10 @@ workspace.DescendantRemoving:Connect(function(Instance)
         GundDropVec3 = nil
         GunDropCFrame = nil
         GunDropLine.Visible = false
-        for i, v in ipairs(game.Players:GetPlayers()) do
-            if v.Backpack:FindFirstChild('Gun') or v.Character:FindFirstChild('Gun') then -- murder
-                murder = v.Name
-                if murder == LocalPlayer.Name then -- if YOU are the murder
+        for i, v in ipairs(alivePlayers) do
+            if v.Backpack:FindFirstChild('Gun') or v.Character:FindFirstChild('Gun') then -- sheriff
+                sheriff = v.Name
+                if sheriff == LocalPlayer.Name then -- if YOU are the murder
                     HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(255,0,0)
                     HighlightCollection[v.Name].FillColor = Color3.fromRGB(255,0,0)
                     HighlightCollection[v.Name].Enabled = true
@@ -182,42 +182,45 @@ end)
 ------------------------------------------------------------------------------------------------------------------------------------
 ReplicatedStorage.Remotes.Gameplay.RoundStart.OnClientEvent:Connect(function() 
     for i, v in ipairs(game.Players:GetPlayers()) do
-        if v.Backpack:FindFirstChild('Knife') or v.Character:FindFirstChild('Knife') then -- murder
-            murder = v.Name
-            if murder == LocalPlayer.Name then -- if YOU are the murder
-                HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(255,0,0)
-                HighlightCollection[v.Name].FillColor = Color3.fromRGB(255,0,0)
-                HighlightCollection[v.Name].Enabled = true
-                -- do nothing cuz I dont want a line to myself
+        if v.Character then
+            if v.Backpack:FindFirstChild('Knife') or v.Character:FindFirstChild('Knife') then -- murder
+                murder = v.Name
+                if murder == LocalPlayer.Name then -- if YOU are the murder
+                    HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(255,0,0)
+                    HighlightCollection[v.Name].FillColor = Color3.fromRGB(255,0,0)
+                    HighlightCollection[v.Name].Enabled = true
+                    -- do nothing cuz I dont want a line to myself
+                else
+                    murder = v.Name
+                    HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(255,0,0)
+                    HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(255,0,0)
+                    HighlightCollection[v.Name].Enabled = true
+                    HighlightCollection[v.Name].Parent = v.Character
+                    LineCollection[v.Name].Color = Color3.fromRGB(255,0,0)
+                    LineCollection[v.Name].Visible = true
+                end
+            elseif v.Backpack:FindFirstChild('Gun') or v.Character:FindFirstChild('Gun') then -- sheriff
+                sheriff = v.Name
+                if sheriff == LocalPlayer.Name then -- if YOU are the sheriff
+                    HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(0,0,255)
+                    HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(0,0,255)
+                    HighlightCollection[v.Name].Enabled = true
+                    -- do nothing cuz I dont want a line to myself
+                else
+                    HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(0,0,255)
+                    HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(0,0,255)
+                    HighlightCollection[v.Name].Parent = v.Character
+                    HighlightCollection[v.Name].Enabled = true
+                    LineCollection[v.Name].Color = Color3.fromRGB(0,0,255)
+                    LineCollection[v.Name].Visible = true
+                end
             else
-                HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(255,0,0)
-                HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(255,0,0)
-                HighlightCollection[v.Name].Enabled = true
                 HighlightCollection[v.Name].Parent = v.Character
-                LineCollection[v.Name].Color = Color3.fromRGB(255,0,0)
-                LineCollection[v.Name].Visible = true
-            end
-        elseif v.Backpack:FindFirstChild('Gun') or v.Character:FindFirstChild('Gun') then -- sheriff
-            sheriff = v.Name
-            if sheriff == LocalPlayer.Name then -- if YOU are the sheriff
-                HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(0,0,255)
-                HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(0,0,255)
-                HighlightCollection[v.Name].Enabled = true
-                -- do nothing cuz I dont want a line to myself
-            else
-                HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(0,0,255)
-                HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(0,0,255)
-                HighlightCollection[v.Name].Parent = v.Character
-                HighlightCollection[v.Name].Enabled = true
-                LineCollection[v.Name].Color = Color3.fromRGB(0,0,255)
-                LineCollection[v.Name].Visible = true
-            end
-        else
-            HighlightCollection[v.Name].Parent = v.Character
-            LineCollection[v.Name].Color = Color3.fromRGB(0,0,0)
-            if not PlayerESPBool then
-                HighlightCollection[v.Name].Enabled = false
-                LineCollection[v.Name].Visible = false
+                LineCollection[v.Name].Color = Color3.fromRGB(0,0,0)
+                if not PlayerESPBool then
+                    HighlightCollection[v.Name].Enabled = false
+                    LineCollection[v.Name].Visible = false
+                end
             end
         end
     end
