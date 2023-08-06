@@ -180,14 +180,20 @@ end)
 ------------------------------------------------------------------------------------------------------------------------------------ ROUND START
 ------------------------------------------------------------------------------------------------------------------------------------
 ReplicatedStorage.Remotes.Gameplay.RoundStart.OnClientEvent:Connect(function() 
-    for i, v in ipairs(game.Players:GetPlayers()) do
+    for i, v in ipairs(alivePlayers) do
         if v.Character then
+            v.Character.UpperTorso.CanCollide = false
+            v.Character.LowerTorso.CanCollide = false
             if v.Backpack:FindFirstChild('Knife') or v.Character:FindFirstChild('Knife') then -- murder
                 murder = v.Name
                 if murder == LocalPlayer.Name then -- if YOU are the murder
                     HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(255,0,0)
                     HighlightCollection[v.Name].FillColor = Color3.fromRGB(255,0,0)
                     HighlightCollection[v.Name].Enabled = true
+                    for i, v in ipairs(alivePlayers) do
+                        HighlightCollection[v.Name].Enabled = true
+                        LineCollection[v.Name].Visible = true
+                    end
                     -- do nothing cuz I dont want a line to myself
                 else
                     murder = v.Name
@@ -249,10 +255,11 @@ RunService.RenderStepped:Connect(function()
             GunDropLine.To = screenVector
         end
     end
-    
-    for i, v in ipairs(LocalPlayer.Character:GetDescendants()) do
-        if noclipBool and v:IsA("BasePart") and v.CanCollide == true then
-            v.CanCollide = false
+    if LocalPlayer.Character then
+        for i, v in ipairs(LocalPlayer.Character:GetDescendants()) do
+            if noclipBool and v:IsA("BasePart") and v.CanCollide == true then
+                v.CanCollide = false
+            end
         end
     end
 end)
@@ -261,6 +268,7 @@ end)
 ------------------------------------------------------------------------------------------------------------------------------------
 
 ReplicatedStorage.Remotes.Gameplay.GameOver.OnClientEvent:Connect(function()
+    print("game over!!")
     GunDropCFrame = nil
     GunDropVec3 = nil
     GunDropLine.Visible = false
@@ -270,6 +278,7 @@ ReplicatedStorage.Remotes.Gameplay.GameOver.OnClientEvent:Connect(function()
 end)
 
 ReplicatedStorage.Remotes.Gameplay.RoundEndFade.OnClientEvent:Connect(function()
+    print("RoundEndFade")
     for key, value in pairs(HighlightCollection) do
         value.FillColor = Color3.fromRGB(0,0,0)
         value.OutlineColor = Color3.fromRGB(0,0,0)
@@ -281,6 +290,9 @@ ReplicatedStorage.Remotes.Gameplay.RoundEndFade.OnClientEvent:Connect(function()
     end
 end)
 
+ReplicatedStorage.Remotes.Gameplay.VictoryScreen.OnClientEvent:Connect(function()
+    print("VictoryScreen")
+end)
 
 ReplicatedStorage.Remotes.Gameplay.RoleSelect.OnClientEvent:Connect(function()
     for i, v in ipairs(game.Players:GetPlayers()) do
