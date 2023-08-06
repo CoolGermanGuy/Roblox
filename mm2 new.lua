@@ -1,4 +1,4 @@
--- Please execute script BEFORE round starts, ESP will not work mid-round
+-- Welcome to valyse!-- Please execute script BEFORE round starts, ESP will not work mid-round
 setfpscap(9999)
 
 murder_sherrif_esp_key = "G"
@@ -34,7 +34,7 @@ local GunDropVec3
 -- booleans
 local noclipBool = false
 local MurderSheriffESPBool = true
-local PlayerESPBool = false
+local PlayerESPBool = true
 local ESPBool = true
 
 -- Preloaded stuff to reduce lag
@@ -45,7 +45,7 @@ gundropHighlight.Enabled = true
 local GunDropLine = Drawing.new("Line")
 GunDropLine.From = Vector2.new(VPS.X / 2, 0.75 * Y75)
 GunDropLine.Visible = false
-GunDropLine.Color = Color3.fromRGB(0,0,255)
+GunDropLine.Color = Color3.fromRGB(0,255,255)
 GunDropLine.To = Vector2.new(0,0)
 
 LineCollection = {}
@@ -135,7 +135,7 @@ workspace.DescendantRemoving:Connect(function(Instance)
         GunDropCFrame = nil
         GunDropLine.Visible = false
         for i, v in ipairs(alivePlayers) do
-            if v.Backpack:FindFirstChild('Gun') or v.Character:FindFirstChild('Gun') then -- sheriff
+            if Players[v.Name].Backpack:FindFirstChild('Gun') or Players[v.Name].Character:FindFirstChild('Gun') then -- sheriff
                 sheriff = v.Name
                 if sheriff == LocalPlayer.Name then -- if YOU are the murder
                     HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(255,0,0)
@@ -216,6 +216,7 @@ ReplicatedStorage.Remotes.Gameplay.RoundStart.OnClientEvent:Connect(function()
                 end
             else
                 HighlightCollection[v.Name].Parent = v.Character
+                HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(0,0,0)
                 LineCollection[v.Name].Color = Color3.fromRGB(0,0,0)
                 if not PlayerESPBool then
                     HighlightCollection[v.Name].Enabled = false
@@ -290,6 +291,15 @@ ReplicatedStorage.Remotes.Gameplay.RoleSelect.OnClientEvent:Connect(function()
                 if alivePlayers[index].Name == v.Name then                       
                     table.remove(alivePlayers, index)
                     break
+                end
+            end
+            if v.Name == LocalPlayer.Name then
+                GunDropLine.Visible = false
+                for i, v in ipairs(HighlightCollection) do
+                    v.Enabled = false
+                end
+                for i, v in ipairs(LineCollection) do
+                    v.Visible = false
                 end
             end
             HighlightCollection[v.Name].Enabled = false
