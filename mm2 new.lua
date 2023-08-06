@@ -133,21 +133,23 @@ workspace.DescendantRemoving:Connect(function(Instance)
         GundDropVec3 = nil
         GunDropCFrame = nil
         GunDropLine.Visible = false
-        for i, v in ipairs(alivePlayers) do
-            if Players[v.Name].Backpack:FindFirstChild('Gun') or Players[v.Name].Character:FindFirstChild('Gun') then -- sheriff
-                sheriff = v.Name
-                if sheriff == LocalPlayer.Name then -- if YOU are the murder
-                    HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(255,0,0)
-                    HighlightCollection[v.Name].FillColor = Color3.fromRGB(255,0,0)
-                    HighlightCollection[v.Name].Enabled = true
-                    -- do nothing cuz I dont want a line to myself
-                else
-                    HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(255,0,0)
-                    HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(255,0,0)
-                    HighlightCollection[v.Name].Enabled = true
-                    HighlightCollection[v.Name].Parent = v.Character
-                    LineCollection[v.Name].Color = Color3.fromRGB(255,0,0)
-                    LineCollection[v.Name].Visible = true
+        if alivePlayers[1] then
+            for i, v in ipairs(alivePlayers) do
+                if Players[v.Name].Backpack:FindFirstChild('Gun') or Players[v.Name].Character:FindFirstChild('Gun') then -- sheriff
+                    sheriff = v.Name
+                    if sheriff == LocalPlayer.Name then -- if YOU are the murder
+                        HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(255,0,0)
+                        HighlightCollection[v.Name].FillColor = Color3.fromRGB(255,0,0)
+                        HighlightCollection[v.Name].Enabled = true
+                        -- do nothing cuz I dont want a line to myself
+                    else
+                        HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(255,0,0)
+                        HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(255,0,0)
+                        HighlightCollection[v.Name].Enabled = true
+                        HighlightCollection[v.Name].Parent = v.Character
+                        LineCollection[v.Name].Color = Color3.fromRGB(255,0,0)
+                        LineCollection[v.Name].Visible = true
+                    end
                 end
             end
         end
@@ -267,15 +269,6 @@ end)
 ------------------------------------------------------------------------------------------------------------------------------------ RENDERSTEPPED
 ------------------------------------------------------------------------------------------------------------------------------------
 
-ReplicatedStorage.Remotes.Gameplay.GameOver.OnClientEvent:Connect(function()
-    print("game over!!")
-    GunDropCFrame = nil
-    GunDropVec3 = nil
-    GunDropLine.Visible = false
-    for i = 1, #alivePlayers do
-        table.remove(alivePlayers, i)
-    end
-end)
 
 ReplicatedStorage.Remotes.Gameplay.RoundEndFade.OnClientEvent:Connect(function()
     print("RoundEndFade")
@@ -291,7 +284,12 @@ ReplicatedStorage.Remotes.Gameplay.RoundEndFade.OnClientEvent:Connect(function()
 end)
 
 ReplicatedStorage.Remotes.Gameplay.VictoryScreen.OnClientEvent:Connect(function()
-    print("VictoryScreen")
+    GunDropCFrame = nil
+    GunDropVec3 = nil
+    GunDropLine.Visible = false
+    for i = 1, #alivePlayers do
+        table.remove(alivePlayers, i)
+    end
 end)
 
 ReplicatedStorage.Remotes.Gameplay.RoleSelect.OnClientEvent:Connect(function()
