@@ -10,7 +10,6 @@ walkspeed_19 = "R"
 walkspeed_16 = "T"
 noclipBool_key = "X"
 player_esp_key = "P"
-teleport_to_nearest_player = "E"
 
 
 
@@ -28,11 +27,11 @@ local Y75 = (0.75 * VPS.Y)
 -- weird variables
 local murder = nil
 local sheriff = nil
-local GunDrop = nil
+local GunDropCFrame = nil
+local GunDropVec3
 
 
 -- booleans
-local gundropBool = false
 local noclipBool = false
 local MurderSheriffESPBool = true
 local PlayerESPBool = false
@@ -70,16 +69,16 @@ functions = {
         end
     end,
     [gun_and_back_key] = function()
-        if gundropBool then
+        if GunDropCFrame then
             local ogcframe = Character.HumanoidRootPart.CFrame
-            Character.HumanoidRootPart.CFrame = GunDrop.CFrame
+            Character.HumanoidRootPart.CFrame = GunDropCFrame
             task.wait(0.2)
             Character.HumanoidRootPart.CFrame = ogcframe
         end
     end,
     [gun_key] = function()
-        if gundropBool then
-            Character.HumanoidRootPart.CFrame = GunDrop.CFrame
+        if GunDropCFrame then
+            Character.HumanoidRootPart.CFrame = GunDropCFrame
         end
     end,
     [fake_lag_key] = function()
@@ -100,24 +99,6 @@ functions = {
         elseif not noclipBool then
             Character.UpperTorso.CanCollide = true
             Character.LowerTorso.CanCollide = true
-        end
-    end,
-    [teleport_to_nearest_player] = function()
-        for i, v in ipairs(game.Players:GetPlayers()) do
-            print("i", i)
-            print("v", v)
-            --[[
-            if v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
-                print("foo")
-                local magnitude = (Character.HumanoidRootPart.Position - v.Character.HumanoidRootPart.Position).Magnitude
-                print(magnitude)
-                print("current", nearestPlayer)
-                if magnitude < nearestPlayer then
-                    print("new", nearestPlayer)
-                    nearestPlayer = magnitude
-                end
-            end
-            ]]
         end
     end,
     [player_esp_key] = function()
@@ -143,14 +124,34 @@ workspace.DescendantAdded:Connect(function(Instance)
         gundropHighlight.Parent = Instance
 
         GunDropLine.Visible = true
-        gundropBool = Instance
+        GunDropVec3 = Instance.Position
+        GunDropCFrame = Instance.CFrame
     end
 end)
 ------------------------------------------------------------------------------------------------------------------------------------ Checking if gun is gone and making the Line gone
 workspace.DescendantRemoving:Connect(function(Instance)
     if Instance.Name == "GunDrop" then
-        GundDrop = nil
+        GundDropVec3 = nil
+        GunDropCFrame = nil
         GunDropLine.Visible = false
+        for i, v in ipairs(game.Players:GetPlayers()) do
+            if v.Backpack:FindFirstChild('Gun') or v.Character:FindFirstChild('Gun') then -- murder
+                murder = v.Name
+                if murder == LocalPlayer.Name then -- if YOU are the murder
+                    HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(255,0,0)
+                    HighlightCollection[v.Name].FillColor = Color3.fromRGB(255,0,0)
+                    HighlightCollection[v.Name].Enabled = true
+                    -- do nothing cuz I dont want a line to myself
+                else
+                    HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(255,0,0)
+                    HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(255,0,0)
+                    HighlightCollection[v.Name].Enabled = true
+                    HighlightCollection[v.Name].Parent = v.Character
+                    LineCollection[v.Name].Color = Color3.fromRGB(255,0,0)
+                    LineCollection[v.Name].Visible = true
+                end
+            end
+        end
     end
 end)
 ------------------------------------------------------------------------------------------------------------------------------------ player joins = make esp ready
@@ -229,17 +230,17 @@ end)
 ------------------------------------------------------------------------------------------------------------------------------------ RENDERSTEPPED
 ------------------------------------------------------------------------------------------------------------------------------------
 RunService.RenderStepped:Connect(function()
-    for index, player in ipairs(alivePlayers) do
-        if player:FindFirstChild("Character") then
-            local screenPosition, isOnScreen = workspace.CurrentCamera:WorldToScreenPoint(player.Character.HumanoidRootPart.Position)
+    for index, value in ipairs(alivePlayers) do
+        if value.Character and value.Character:FindFirstChild("HumanoidRootPart") then
+            local screenPosition, isOnScreen = workspace.CurrentCamera:WorldToScreenPoint(value.Character.HumanoidRootPart.Position)
             if isOnScreen then
                 local screenVector = Vector2.new(screenPosition.X, screenPosition.Y + GuiInset.Y)
-                LineCollection[player.Name].To = screenVector
+                LineCollection[value.Name].To = screenVector
             end
         end
     end
-    if gundropBool then
-        local screenPosition, isOnScreen = workspace.CurrentCamera:WorldToScreenPoint(gundropBool.Position)
+    if GunDropVec3 then
+        local screenPosition, isOnScreen = workspace.CurrentCamera:WorldToScreenPoint(GunDropVec3)
         if isOnScreen then
             local screenVector = Vector2.new(screenPosition.X, screenPosition.Y + GuiInset.Y)
             GunDropLine.To = screenVector
@@ -257,19 +258,11 @@ end)
 ------------------------------------------------------------------------------------------------------------------------------------
 
 ReplicatedStorage.Remotes.Gameplay.GameOver.OnClientEvent:Connect(function()
-    gundropBool = false
-    nearestPlayer = 99999999999999
+    GunDropCFrame = nil
+    GunDropVec3 = nil
     GunDropLine.Visible = false
     for index, value in ipairs(alivePlayers) do
         value = nil
-    end
-    task.wait(0.5)
-    for i, v in ipairs(Players:GetPlayers()) do
-        table.insert(alivePlayers, v)
-
-        v.Character.Died:Connect(function()
-            print(v.Name, "died!")
-        end)
     end
 end)
 
@@ -285,16 +278,14 @@ ReplicatedStorage.Remotes.Gameplay.RoundEndFade.OnClientEvent:Connect(function()
     end
 end)
 
-Character.Humanoid.Died:Connect(function()
-    print("YOU died!")
-end)
 
 ReplicatedStorage.Remotes.Gameplay.RoleSelect.OnClientEvent:Connect(function()
-    for i, v in ipairs(Players:GetPlayers()) do
+    for i, v in ipairs(game.Players:GetPlayers()) do
         table.insert(alivePlayers, v)
-
-        v.CharacterAdded:Connect(function(Character)
-
+        v.Character.Humanoid.Died:Connect(function()
+            table.remove(alivePlayers, v)
+            HighlightCollection[v.Name].Enabled = false
+            LineCollection[v.Name].Visible = false
         end)
     end
 end)
