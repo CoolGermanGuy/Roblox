@@ -135,20 +135,22 @@ workspace.DescendantRemoving:Connect(function(Instance)
         GunDropLine.Visible = false
         if alivePlayers[1] then
             for i, v in ipairs(alivePlayers) do
-                if Players[v.Name].Backpack:FindFirstChild('Gun') or Players[v.Name].Character:FindFirstChild('Gun') then -- sheriff
-                    sheriff = v.Name
-                    if sheriff == LocalPlayer.Name then -- if YOU are the murder
-                        HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(255,0,0)
-                        HighlightCollection[v.Name].FillColor = Color3.fromRGB(255,0,0)
-                        HighlightCollection[v.Name].Enabled = true
-                        -- do nothing cuz I dont want a line to myself
-                    else
-                        HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(255,0,0)
-                        HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(255,0,0)
-                        HighlightCollection[v.Name].Enabled = true
-                        HighlightCollection[v.Name].Parent = v.Character
-                        LineCollection[v.Name].Color = Color3.fromRGB(255,0,0)
-                        LineCollection[v.Name].Visible = true
+                if v then
+                    if v.Backpack:FindFirstChild('Gun') or v.Character:FindFirstChild('Gun') then -- sheriff
+                        sheriff = v.Name
+                        if sheriff == LocalPlayer.Name then -- if YOU are the murder
+                            HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(255,0,0)
+                            HighlightCollection[v.Name].FillColor = Color3.fromRGB(255,0,0)
+                            HighlightCollection[v.Name].Enabled = true
+                            -- do nothing cuz I dont want a line to myself
+                        else
+                            HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(255,0,0)
+                            HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(255,0,0)
+                            HighlightCollection[v.Name].Enabled = true
+                            HighlightCollection[v.Name].Parent = v.Character
+                            LineCollection[v.Name].Color = Color3.fromRGB(255,0,0)
+                            LineCollection[v.Name].Visible = true
+                        end
                     end
                 end
             end
