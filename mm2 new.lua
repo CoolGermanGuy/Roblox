@@ -65,12 +65,12 @@ functions = {
         if MurderSheriffESPBool then
             HighlightCollection[murder].Enabled = true
             HighlightCollection[sheriff].Enabled = true
-            LineCollection[murder.Visible = true
+            LineCollection[murder].Visible = true
             LineCollection[sheriff].Visible = true
         else
             HighlightCollection[murder].Enabled = false
             HighlightCollection[sheriff].Enabled = false
-            LineCollection[murder.Visible = false
+            LineCollection[murder].Visible = false
             LineCollection[sheriff].Visible = false
         end
     end,
@@ -110,14 +110,14 @@ functions = {
     [player_esp_key] = function()
         PlayerESPBool = not PlayerESPBool
         if PlayerESPBool then
-            for i, v in ipairs(alivePlayers)) do
+            for i, v in ipairs(alivePlayers) do
                 if v.Name ~= murder or sheriff then
                     HighlightCollection[v.Name].Enabled = true
                     LineCollection[v.Name].Visible = true
                 end
             end
         else
-            for i, v in ipairs(alivePlayers)) do
+            for i, v in ipairs(alivePlayers) do
                 if v.Name ~= murder or sheriff then
                     HighlightCollection[v.Name].Enabled = false
                     LineCollection[v.Name].Visible = false
