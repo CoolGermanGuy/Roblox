@@ -27,9 +27,9 @@ local VPS = camera.ViewportSize
 local Y75 = (0.75 * VPS.Y)
 
 -- weird variables
-local murder = nil
-local sheriff = nil
-local GunDropCFrame = nil
+local murder
+local sheriff
+local GunDropCFrame
 local GunDropVec3
 
 
@@ -37,7 +37,6 @@ local GunDropVec3
 local noclipBool = false
 local MurderSheriffESPBool = true
 local PlayerESPBool = true
-local ESPBool = true
 local deadBool = false
 local infiniteJumpBool = false
 
@@ -111,14 +110,14 @@ functions = {
         PlayerESPBool = not PlayerESPBool
         if PlayerESPBool then
             for i, v in ipairs(alivePlayers) do
-                if v.Name ~= murder or sheriff then
+                if v.Name ~= murder and v.Name ~= sheriff and v.Name ~= LocalPlayer.Name then
                     HighlightCollection[v.Name].Enabled = true
                     LineCollection[v.Name].Visible = true
                 end
             end
         else
             for i, v in ipairs(alivePlayers) do
-                if v.Name ~= murder or sheriff then
+                if v.Name ~= murder and v.Name ~= sheriff and v.Name ~= LocalPlayer.Name then
                     HighlightCollection[v.Name].Enabled = false
                     LineCollection[v.Name].Visible = false
                 end
