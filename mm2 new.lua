@@ -10,16 +10,19 @@ walkspeed_19 = "R"
 walkspeed_16 = "T"
 noclipBool_key = "X"
 player_esp_key = "P"
+toggle_infinite_jump = "H"
+teleport_to_nearest_player = "E"
 
 
 
 -- Usual Variables
+local UserInputService = Game:GetService('UserInputService')
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
-local camera = workspace.CurrentCamera
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local GuiInset = game:GetService("GuiService"):GetGuiInset()
+local camera = workspace.CurrentCamera
 local VPS = camera.ViewportSize
 local Y75 = (0.75 * VPS.Y)
 
@@ -35,6 +38,8 @@ local noclipBool = false
 local MurderSheriffESPBool = true
 local PlayerESPBool = true
 local ESPBool = true
+local deadBool = false
+local infiniteJumpBool = false
 
 -- Preloaded stuff to reduce lag
 local gundropHighlight = Instance.new("Highlight")
@@ -53,7 +58,7 @@ alivePlayers = {}
 ------------------------------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------------------
-local UserInputService = Game:GetService('UserInputService')
+
 functions = {
     [murder_sherrif_esp_key] = function()
         MurderSheriffESPBool = not MurderSheriffESPBool
@@ -108,7 +113,29 @@ functions = {
             end
         end
     end,
+    [toggle_infinite_jump] = function()
+        infiniteJumpBool = not infiniteJumpBool
+    end,
+    [teleport_to_nearest_player] = function()
+        Magnitude = 999999999
+        nearestPlayer = nil
+        for i, v in ipairs(game:GetService("Players"):GetPlayers()) do
+            if v.Name ~= LocalPlayer.Name then
+                if (LocalPlayer.Character.HumanoidRootPart.Position - v.Character.HumanoidRootPart.Position).Magnitude < Magnitude then
+                    Magnitude = (LocalPlayer.Character.HumanoidRootPart.Position - v.Character.HumanoidRootPart.Position).Magnitude
+                    nearestPlayer = v
+                end
+            end
+        end
+        LocalPlayer.Character.HumanoidRootPart.CFrame = nearestPlayer.Character.HumanoidRootPart.CFrame
+    end,
 }
+
+UserInputService.JumpRequest:Connect(function()
+    if infiniteJumpBool then
+        LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
+    end
+end)
 
 UserInputService.InputEnded:Connect(function(input, gameProcessed)
     if input.KeyCode and functions[UserInputService:GetStringForKeyCode(input.KeyCode)] and not gameProcessed then
@@ -119,7 +146,7 @@ end)
 ------------------------------------------------------------------------------------------------------------------------------------ Checking when sheriff died and shows gun
 workspace.DescendantAdded:Connect(function(Instance)
     task.wait(0.01)
-    if Instance.Name == "GunDrop" then
+    if Instance.Name == "GunDrop" and not deadBool then
         gundropHighlight.Parent = Instance
 
         GunDropLine.Visible = true
@@ -128,29 +155,27 @@ workspace.DescendantAdded:Connect(function(Instance)
     end
 end)
 ------------------------------------------------------------------------------------------------------------------------------------ Checking if gun is gone and making the Line gone
-workspace.DescendantRemoving:Connect(function(Instance)
+workspace.DescendantRemoving:Connect(function(Instance) -- SETTING NEW SHERIFF DOESNT WORK
     if Instance.Name == "GunDrop" then
         GundDropVec3 = nil
         GunDropCFrame = nil
         GunDropLine.Visible = false
-        if alivePlayers[1] then
-            for i, v in ipairs(alivePlayers) do
-                if v then
-                    if v.Backpack:FindFirstChild('Gun') or v.Character:FindFirstChild('Gun') then -- sheriff
-                        sheriff = v.Name
-                        if sheriff == LocalPlayer.Name then -- if YOU are the murder
-                            HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(255,0,0)
-                            HighlightCollection[v.Name].FillColor = Color3.fromRGB(255,0,0)
-                            HighlightCollection[v.Name].Enabled = true
-                            -- do nothing cuz I dont want a line to myself
-                        else
-                            HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(255,0,0)
-                            HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(255,0,0)
-                            HighlightCollection[v.Name].Enabled = true
-                            HighlightCollection[v.Name].Parent = v.Character
-                            LineCollection[v.Name].Color = Color3.fromRGB(255,0,0)
-                            LineCollection[v.Name].Visible = true
-                        end
+        for i, v in ipairs(alivePlayers) do
+            if v.Character then
+                if v.Backpack:FindFirstChild('Gun') or v.Character:FindFirstChild('Gun') then -- sheriff
+                    sheriff = v.Name
+                    if sheriff == LocalPlayer.Name then -- if YOU are the sheriff
+                        HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(0,0,255)
+                        HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(0,0,255)
+                        HighlightCollection[v.Name].Enabled = true
+                        -- do nothing cuz I dont want a line to myself
+                    else
+                        HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(0,0,255)
+                        HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(0,0,255)
+                        HighlightCollection[v.Name].Parent = v.Character
+                        HighlightCollection[v.Name].Enabled = true
+                        LineCollection[v.Name].Color = Color3.fromRGB(0,0,255)
+                        LineCollection[v.Name].Visible = true
                     end
                 end
             end
@@ -177,13 +202,16 @@ Players.PlayerAdded:Connect(function(player)
 end)
 
 Players.PlayerRemoving:Connect(function(player)
+    HighlightCollection[player.Name].Enabled = false
+    LineCollection[player.Name].Visible = false
     HighlightCollection[player.Name] = nil
     LineCollection[player.Name] = nil
 end)
 ------------------------------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------------------ ROUND START
 ------------------------------------------------------------------------------------------------------------------------------------
-ReplicatedStorage.Remotes.Gameplay.RoundStart.OnClientEvent:Connect(function() 
+ReplicatedStorage.Remotes.Gameplay.RoundStart.OnClientEvent:Connect(function()
+    deadBool = false
     for i, v in ipairs(alivePlayers) do
         if v.Character then
             v.Character.UpperTorso.CanCollide = false
@@ -195,8 +223,10 @@ ReplicatedStorage.Remotes.Gameplay.RoundStart.OnClientEvent:Connect(function()
                     HighlightCollection[v.Name].FillColor = Color3.fromRGB(255,0,0)
                     HighlightCollection[v.Name].Enabled = true
                     for i, v in ipairs(alivePlayers) do
-                        HighlightCollection[v.Name].Enabled = true
-                        LineCollection[v.Name].Visible = true
+                        if HighlightCollection[v.Name] and LineCollection[v.Name] then
+                            HighlightCollection[v.Name].Enabled = true
+                            LineCollection[v.Name].Visible = true
+                        end
                     end
                     -- do nothing cuz I dont want a line to myself
                 else
@@ -273,7 +303,6 @@ end)
 
 
 ReplicatedStorage.Remotes.Gameplay.RoundEndFade.OnClientEvent:Connect(function()
-    print("RoundEndFade")
     for key, value in pairs(HighlightCollection) do
         value.FillColor = Color3.fromRGB(0,0,0)
         value.OutlineColor = Color3.fromRGB(0,0,0)
@@ -305,6 +334,7 @@ ReplicatedStorage.Remotes.Gameplay.RoleSelect.OnClientEvent:Connect(function()
                 end
             end
             if v.Name == LocalPlayer.Name then
+                deadBool = true
                 GunDropLine.Visible = false
                 for i, v in ipairs(HighlightCollection) do
                     v.Enabled = false
