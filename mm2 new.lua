@@ -11,7 +11,7 @@ walkspeed_16 = "T"
 noclipBool_key = "X"
 player_esp_key = "P"
 toggle_infinite_jump = "H"
-teleport_to_nearest_player = "E"
+teleport_to_nearest_player = "N"
 
 
 
@@ -62,14 +62,16 @@ alivePlayers = {}
 functions = {
     [murder_sherrif_esp_key] = function()
         MurderSheriffESPBool = not MurderSheriffESPBool
-        if murder and MurderSheriffESPBool then
-            murder.PlayerHighlight.Enabled = true
-        elseif murder and not MurderSheriffESPBool then
-            murder.PlayerHighlight.Enabled = false
-        elseif sheriff and not MurderSheriffESPBool then
-            sheriff.PlayerHighlight.Enabled = true
-        elseif sheriff and not MurderSheriffESPBool then
-            sheriff.PlayerHighlight.Enabled = false
+        if MurderSheriffESPBool then
+            HighlightCollection[murder].Enabled = true
+            HighlightCollection[sheriff].Enabled = true
+            LineCollection[murder.Visible = true
+            LineCollection[sheriff].Visible = true
+        else
+            HighlightCollection[murder].Enabled = false
+            HighlightCollection[sheriff].Enabled = false
+            LineCollection[murder.Visible = false
+            LineCollection[sheriff].Visible = false
         end
     end,
     [gun_and_back_key] = function()
@@ -106,10 +108,20 @@ functions = {
         end
     end,
     [player_esp_key] = function()
-        player_esp = not player_esp
-        if player_esp then
-            for i, v in ipairs(game.Players:GetPlayers()) do
-
+        PlayerESPBool = not PlayerESPBool
+        if PlayerESPBool then
+            for i, v in ipairs(alivePlayers)) do
+                if v.Name ~= murder or sheriff then
+                    HighlightCollection[v.Name].Enabled = true
+                    LineCollection[v.Name].Visible = true
+                end
+            end
+        else
+            for i, v in ipairs(alivePlayers)) do
+                if v.Name ~= murder or sheriff then
+                    HighlightCollection[v.Name].Enabled = false
+                    LineCollection[v.Name].Visible = false
+                end
             end
         end
     end,
@@ -120,7 +132,7 @@ functions = {
         Magnitude = 999999999
         nearestPlayer = nil
         for i, v in ipairs(game:GetService("Players"):GetPlayers()) do
-            if v.Name ~= LocalPlayer.Name then
+            if v.Character and  v.Character:FindFirstChild("HumanoidRootPart") and v.Name ~= LocalPlayer.Name then
                 if (LocalPlayer.Character.HumanoidRootPart.Position - v.Character.HumanoidRootPart.Position).Magnitude < Magnitude then
                     Magnitude = (LocalPlayer.Character.HumanoidRootPart.Position - v.Character.HumanoidRootPart.Position).Magnitude
                     nearestPlayer = v
@@ -223,12 +235,11 @@ ReplicatedStorage.Remotes.Gameplay.RoundStart.OnClientEvent:Connect(function()
                     HighlightCollection[v.Name].FillColor = Color3.fromRGB(255,0,0)
                     HighlightCollection[v.Name].Enabled = true
                     for i, v in ipairs(alivePlayers) do
-                        if HighlightCollection[v.Name] and LineCollection[v.Name] then
+                        if HighlightCollection[v.Name] and LineCollection[v.Name] and v.Name ~= LocalPlayer.Name then
                             HighlightCollection[v.Name].Enabled = true
                             LineCollection[v.Name].Visible = true
                         end
                     end
-                    -- do nothing cuz I dont want a line to myself
                 else
                     murder = v.Name
                     HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(255,0,0)
@@ -324,9 +335,10 @@ ReplicatedStorage.Remotes.Gameplay.VictoryScreen.OnClientEvent:Connect(function(
 end)
 
 ReplicatedStorage.Remotes.Gameplay.RoleSelect.OnClientEvent:Connect(function()
+    task.wait(2)
     for i, v in ipairs(game.Players:GetPlayers()) do
         table.insert(alivePlayers, v)
-        v.Character.Humanoid.Died:Connect(function()
+        v.Character.Humanoid.Died:Connect(function() -- attempt to index nil with humanoid
             for index = 1, #alivePlayers do
                 if alivePlayers[index].Name == v.Name then                       
                     table.remove(alivePlayers, index)
