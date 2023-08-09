@@ -1,4 +1,4 @@
--- Welcome to valyse!-- Please execute script BEFORE round starts, ESP will not work mid-round
+-- Please execute script BEFORE round starts, ESP will not work mid-round
 setfpscap(9999)
 
 murder_sherrif_esp_key = "P"
@@ -12,7 +12,6 @@ noclipBool_key = "X"
 player_esp_key = "G"
 toggle_infinite_jump = "H"
 teleport_to_nearest_player = "N"
-
 
 
 -- Usual Variables
@@ -135,8 +134,8 @@ functions = {
     [teleport_to_nearest_player] = function()
         Magnitude = 999999999
         nearestPlayer = nil
-        for i, v in ipairs(game:GetService("Players"):GetPlayers()) do
-            if v.Character and  v.Character:FindFirstChild("HumanoidRootPart") and v.Name ~= LocalPlayer.Name then
+        for i, v in ipairs(Players:GetPlayers()) do
+            if v.Character and v.Character:FindFirstChild("HumanoidRootPart") and v.Name ~= LocalPlayer.Name then
                 if (LocalPlayer.Character.HumanoidRootPart.Position - v.Character.HumanoidRootPart.Position).Magnitude < Magnitude then
                     Magnitude = (LocalPlayer.Character.HumanoidRootPart.Position - v.Character.HumanoidRootPart.Position).Magnitude
                     nearestPlayer = v
@@ -173,11 +172,12 @@ end)
 ------------------------------------------------------------------------------------------------------------------------------------ Checking if gun is gone and making the Line gone
 workspace.DescendantRemoving:Connect(function(Instance) -- SETTING NEW SHERIFF DOESNT WORK
     if Instance.Name == "GunDrop" then
-        GundDropVec3 = nil
-        GunDropCFrame = nil
-        GunDropLine.Visible = false
-        for i, v in ipairs(alivePlayers) do
-            if v.Character then
+        if alivePlayers[1] then
+            GundDropVec3 = nil
+            GunDropCFrame = nil
+            GunDropLine.Visible = false
+            task.wait(1.25)
+            for i, v in ipairs(alivePlayers) do
                 if v.Backpack:FindFirstChild('Gun') or v.Character:FindFirstChild('Gun') then -- sheriff
                     sheriff = v.Name
                     if sheriff == LocalPlayer.Name then -- if YOU are the sheriff
@@ -220,6 +220,8 @@ end)
 Players.PlayerRemoving:Connect(function(player)
     HighlightCollection[player.Name].Enabled = false
     LineCollection[player.Name].Visible = false
+    HighlightCollection[player.Name]:Destroy()
+    LineCollection[player.Name]:Destroy()
     table.remove(HighlightCollection, table.find(HighlightCollection, player.Name))
     table.remove(LineCollection, table.find(LineCollection, player.Name))
 end)
@@ -279,6 +281,13 @@ ReplicatedStorage.Remotes.Gameplay.RoundStart.OnClientEvent:Connect(function()
             end
         end
     end
+
+    for i, v in ipairs(workspace:GetDescendants()) do
+        if v.Name == "KillBrick" then
+            v:Destroy()
+        end
+    end
+
 end)
 ------------------------------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------------------ ROUND START
@@ -342,7 +351,7 @@ ReplicatedStorage.Remotes.Gameplay.RoleSelect.OnClientEvent:Connect(function()
     task.wait(2)
     for i, v in ipairs(game.Players:GetPlayers()) do
         table.insert(alivePlayers, v)
-        if v.Character:FindFirstChild("Humanoid") then
+        if v.Character and  v.Character:FindFirstChild("Humanoid") then
             v.Character.Humanoid.Died:Connect(function() -- attempt to index nil with humanoid
                 for index = 1, #alivePlayers do
                     if alivePlayers[index].Name == v.Name then                       
