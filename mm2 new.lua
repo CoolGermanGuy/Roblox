@@ -62,15 +62,20 @@ functions = {
     [murder_sherrif_esp_key] = function()
         MurderSheriffESPBool = not MurderSheriffESPBool
         if MurderSheriffESPBool then
+            if sheriff then
+                LineCollection[sheriff].Visible = true
+                HighlightCollection[sheriff].Enabled = true
+            end
             HighlightCollection[murder].Enabled = true
-            HighlightCollection[sheriff].Enabled = true
             LineCollection[murder].Visible = true
-            LineCollection[sheriff].Visible = true
+            
         else
+            if sheriff then
+                LineCollection[sheriff].Visible = false
+                HighlightCollection[sheriff].Enabled = false
+            end
             HighlightCollection[murder].Enabled = false
-            HighlightCollection[sheriff].Enabled = false
             LineCollection[murder].Visible = false
-            LineCollection[sheriff].Visible = false
         end
     end,
     [gun_and_back_key] = function()
@@ -215,8 +220,8 @@ end)
 Players.PlayerRemoving:Connect(function(player)
     HighlightCollection[player.Name].Enabled = false
     LineCollection[player.Name].Visible = false
-    HighlightCollection[player.Name] = nil
-    LineCollection[player.Name] = nil
+    table.remove(HighlightCollection, table.find(HighlightCollection, player.Name))
+    table.remove(LineCollection, table.find(LineCollection, player.Name))
 end)
 ------------------------------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------------------ ROUND START
