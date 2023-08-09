@@ -342,26 +342,28 @@ ReplicatedStorage.Remotes.Gameplay.RoleSelect.OnClientEvent:Connect(function()
     task.wait(2)
     for i, v in ipairs(game.Players:GetPlayers()) do
         table.insert(alivePlayers, v)
-        v.Character.Humanoid.Died:Connect(function() -- attempt to index nil with humanoid
-            for index = 1, #alivePlayers do
-                if alivePlayers[index].Name == v.Name then                       
-                    table.remove(alivePlayers, index)
-                    break
+        if v.Character:FindFirstChild("Humanoid") then
+            v.Character.Humanoid.Died:Connect(function() -- attempt to index nil with humanoid
+                for index = 1, #alivePlayers do
+                    if alivePlayers[index].Name == v.Name then                       
+                        table.remove(alivePlayers, index)
+                        break
+                    end
                 end
-            end
-            if v.Name == LocalPlayer.Name then
-                deadBool = true
-                GunDropLine.Visible = false
-                for i, v in ipairs(HighlightCollection) do
-                    v.Enabled = false
+                if v.Name == LocalPlayer.Name then
+                    deadBool = true
+                    GunDropLine.Visible = false
+                    for i, v in ipairs(HighlightCollection) do
+                        v.Enabled = false
+                    end
+                    for i, v in ipairs(LineCollection) do
+                        v.Visible = false
+                    end
                 end
-                for i, v in ipairs(LineCollection) do
-                    v.Visible = false
-                end
-            end
-            HighlightCollection[v.Name].Enabled = false
-            LineCollection[v.Name].Visible = false
-        end)
+                HighlightCollection[v.Name].Enabled = false
+                LineCollection[v.Name].Visible = false
+            end)
+        end
     end
 end)
 
