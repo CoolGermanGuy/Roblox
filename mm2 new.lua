@@ -12,6 +12,7 @@ noclipBool_key = "X"
 player_esp_key = "G"
 toggle_infinite_jump = "H"
 teleport_to_nearest_player = "N"
+shoot_at_murder = "E"
 
 
 -- Usual Variables
@@ -143,6 +144,11 @@ functions = {
             end
         end
         LocalPlayer.Character.HumanoidRootPart.CFrame = nearestPlayer.Character.HumanoidRootPart.CFrame
+    end,
+    [shoot_at_murder] = function()
+        if sheriff == LocalPlayer.Name then
+            workspace[LocalPlayer.Name].Gun.KnifeServer.ShootGun:InvokeServer(1, Players[murder].Character.HumanoidRootPart.Position, "AH")
+        end
     end,
 }
 
@@ -327,6 +333,12 @@ end)
 
 
 ReplicatedStorage.Remotes.Gameplay.RoundEndFade.OnClientEvent:Connect(function()
+    GunDropCFrame = nil
+    GunDropVec3 = nil
+    GunDropLine.Visible = false
+    for i = 1, #alivePlayers do
+        table.remove(alivePlayers, i)
+    end
     for key, value in pairs(HighlightCollection) do
         value.FillColor = Color3.fromRGB(0,0,0)
         value.OutlineColor = Color3.fromRGB(0,0,0)
@@ -339,12 +351,14 @@ ReplicatedStorage.Remotes.Gameplay.RoundEndFade.OnClientEvent:Connect(function()
 end)
 
 ReplicatedStorage.Remotes.Gameplay.VictoryScreen.OnClientEvent:Connect(function()
+    --[[
     GunDropCFrame = nil
     GunDropVec3 = nil
     GunDropLine.Visible = false
     for i = 1, #alivePlayers do
         table.remove(alivePlayers, i)
     end
+    ]]
 end)
 
 ReplicatedStorage.Remotes.Gameplay.RoleSelect.OnClientEvent:Connect(function()
