@@ -1,4 +1,4 @@
-local selected = "mew_Sp"
+local selected = "k8tkat606"
 local prefix = "!"
 
 
@@ -12,7 +12,7 @@ allcontrol = false
 
 -- variables
 loopteleport = false
-
+animestand = false
 
 function getArgs(splitmsg)
 	local inString = false
@@ -43,10 +43,8 @@ function getArgs(splitmsg)
 end
 
 function getPlayer(pattern: string)
-	if string.match(pattern, "Me") or string.match(pattern, "me") then
-		return selected;
-	elseif string.match(pattern, "All") or string.match(pattern, "all") then
-		return Players:GetPlayers();
+	if pattern == "Me" or "me" then
+		return Players[selected];
 	else
 		for index, player in ipairs(Players:GetPlayers()) do
 			if player.Name:match(pattern) or player.DisplayName:match(pattern) then
@@ -75,8 +73,44 @@ local commands = {
     ["die"] = {func = function()
         LocalPlayer.Character.Head:Destroy()
     end, aliases = {"death", "oof"}},
+    --[[
+    ["animestand"] = {func = function(bool, player)
+        if bool == "true" then
+            animestand = true
+            player = getPlayer(player)
+            LocalPlayer.Character.Humanoid.PlatformStand = true
+            LocalPlayer.Character.HumanoidRootPart.Anchored = true
+            while task.wait() do
+                if animestand then
+                    local targetPosition = player.Character.HumanoidRootPart.Position
+                    local targetLookVector = player.Character.HumanoidRootPart.CFrame.LookVector * -1
+                    local offset = targetLookVector * 3 - Vector3.new(3, 0, 0)
+                    LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(targetPosition + offset)
+                else
+                    break
+                end
+            end
+        elseif bool == "false" then
+            animestand = false
+        else
+            ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(bool.." is not valid, use either \"true\" or \"false\"", "All")
+        end
+    end, aliases = {"stand", "anime", "gay"}},
+    ["fling"] = {func = function(player)
+        local BodyAngularVelocity = Instance.new("BodyAngularVelocity")
+        BodyAngularVelocity.AngularVelocity = Vector3.new(10^6, 10^6, 10^6)
+        BodyAngularVelocity.MaxTorque = Vector3.new(10^6, 10^6, 10^6)
+        BodyAngularVelocity.P = 10^6
+        BodyAngularVelocity.Parent = LocalPlayer.Character.HumanoidRootPart
+        startTime = tick()
+        while tick() - startTime < 5 do
+            LocalPlayer.Character.HumanoidRootPart.CFrame = player.Character.HumanoidRootPart.CFrame * LocalPlayer.Character.HumanoidRootPart.CFrame.Rotation
+            LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new()
+            task.wait()
+        end
+    end, aliases = {}},
+    ]]--
     ["goto"] = {func = function(player)
-        print(player)
         player = getPlayer(player)
         LocalPlayer.Character.HumanoidRootPart.CFrame = player.Character.HumanoidRootPart.CFrame
     end, aliases = {"tp", "teleport"}},
@@ -87,6 +121,8 @@ local commands = {
             while task.wait() do
                 if loopteleport then
                     LocalPlayer.Character.HumanoidRootPart.CFrame = player.Character.HumanoidRootPart.CFrame
+                else
+                    break
                 end
             end
         elseif bool == "false" then
@@ -127,18 +163,20 @@ local commands = {
 ------------------------------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------------------
 
-for i, v in ipairs(controlList) do
+for i, v in ipairs(Players:GetPlayers()) do
     v.Chatted:Connect(function(message)
-        if string.sub(message,1,1) == prefix then
-            local prefixsplitmsg = string.split(message, prefix)
-            local splitmsg = string.split(prefixsplitmsg[2], " ")
-            local args = getArgs(splitmsg)
-            local lowercommand = string.lower(splitmsg[1])
+        if table.find(controlList, v) then
+            if string.sub(message,1,1) == prefix then
+                local prefixsplitmsg = string.split(message, prefix)
+                local splitmsg = string.split(prefixsplitmsg[2], " ")
+                local args = getArgs(splitmsg)
+                local lowercommand = string.lower(splitmsg[1])
 
-            for command, data in pairs(commands) do
-                if lowercommand == command or (data.aliases and table.find(data.aliases, lowercommand)) then
-                    data.func(table.unpack(args))
-                    break
+                for command, data in pairs(commands) do
+                    if lowercommand == command or (data.aliases and table.find(data.aliases, lowercommand)) then
+                        data.func(table.unpack(args))
+                        break
+                    end
                 end
             end
         end
