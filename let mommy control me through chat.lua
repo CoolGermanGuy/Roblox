@@ -1,4 +1,4 @@
-local selected = "k8tkat606"
+local selected = "username here"
 local prefix = "!"
 
 
@@ -43,7 +43,8 @@ function getArgs(splitmsg)
 end
 
 function getPlayer(pattern: string)
-	if pattern == "Me" or "me" then
+	if pattern == "Me" or pattern == "me" then
+        print("yes")
 		return Players[selected];
 	else
 		for index, player in ipairs(Players:GetPlayers()) do
@@ -71,7 +72,7 @@ local commands = {
         LocalPlayer.Character.Humanoid.Jump = true
     end, aliases = {"bounce"}},
     ["die"] = {func = function()
-        LocalPlayer.Character.Head:Destroy()
+        LocalPlayer.Character.Humanoid.Health = 0
     end, aliases = {"death", "oof"}},
     --[[
     ["animestand"] = {func = function(bool, player)
@@ -132,8 +133,14 @@ local commands = {
         end
     end, aliases = {"loopgoto", "looptp", "lp", "lg"}},
     ["addcontrol"] = {func = function(player)
+        print(player)
         player = getPlayer(player)
+        print(player)
         table.insert(controlList, player)
+        task.wait(1)
+        for i, v in ipairs(controlList) do
+            print(v)
+        end
     end, aliases = {"addc", "ac", "controladd", "controla"}},
     ["removecontrol"] = {func = function(player)
         player = getPlayer(player)
