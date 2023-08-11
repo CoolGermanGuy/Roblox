@@ -1,4 +1,4 @@
-local selected = "username here"
+local selected = "CGGonRoblox"
 local prefix = "!"
 
 
@@ -8,11 +8,10 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local controlList = {Players[selected]}
 
-allcontrol = false
-
 -- variables
 loopteleport = false
 animestand = false
+stare = false
 
 function getArgs(splitmsg)
 	local inString = false
@@ -44,7 +43,6 @@ end
 
 function getPlayer(pattern: string)
 	if pattern == "Me" or pattern == "me" then
-        print("yes")
 		return Players[selected];
 	else
 		for index, player in ipairs(Players:GetPlayers()) do
@@ -62,18 +60,35 @@ end
 ------------------------------------------------------------------------------------------------------------------------------------
 
 local commands = {
-    ["summon"] = {func = function()
-        LocalPlayer.Character.HumanoidRootPart.CFrame = Players[selected].Character.HumanoidRootPart.CFrame
+    ["summon"] = {func = function(whoFired)
+        LocalPlayer.Character.HumanoidRootPart.CFrame = whoFired.Character.HumanoidRootPart.CFrame
     end, aliases = {"bring", "come", "here"}},
-    ["say"] = {func = function(...)
+    ["say"] = {func = function(whoFired, ...)
         ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(table.concat({...}, " "), "All")
     end, aliases = {"talk", "speak"}},
-    ["jump"] = {func = function()
+    ["jump"] = {func = function(whoFired)
         LocalPlayer.Character.Humanoid.Jump = true
     end, aliases = {"bounce"}},
-    ["die"] = {func = function()
+    ["die"] = {func = function(whoFired)
         LocalPlayer.Character.Humanoid.Health = 0
     end, aliases = {"death", "oof"}},
+    ["stare"] = {func = function(whofired, bool, player)
+        if bool == "true" then
+            stare = true
+            player = getPlayer(player)
+            while task.wait() do
+                if stare then
+                    LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.lookAt(LocalPlayer.Character.HumanoidRootPart.Position, player.Character.Head.Position)
+                else
+                    break
+                end
+            end
+        elseif bool == "false" then
+            stare = false
+        else 
+            ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(bool.." is not valid, use either \"true\" or \"false\"", "All")
+        end
+    end, aliases = {"creep", "lookat"}},
     --[[
     ["animestand"] = {func = function(bool, player)
         if bool == "true" then
@@ -111,11 +126,11 @@ local commands = {
         end
     end, aliases = {}},
     ]]--
-    ["goto"] = {func = function(player)
+    ["goto"] = {func = function(whoFired, player)
         player = getPlayer(player)
         LocalPlayer.Character.HumanoidRootPart.CFrame = player.Character.HumanoidRootPart.CFrame
     end, aliases = {"tp", "teleport"}},
-    ["loopgoto"] = {func = function(bool, player)
+    ["loopgoto"] = {func = function(whoFired, bool, player)
         if bool == "true" then
             loopteleport = true
             player = getPlayer(player)
@@ -132,7 +147,7 @@ local commands = {
             ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(bool.." is not valid, use either \"true\" or \"false\"", "All")
         end
     end, aliases = {"loopgoto", "looptp", "lp", "lg"}},
-    ["addcontrol"] = {func = function(player)
+    ["addcontrol"] = {func = function(whoFired, player)
         print(player)
         player = getPlayer(player)
         print(player)
@@ -142,7 +157,7 @@ local commands = {
             print(v)
         end
     end, aliases = {"addc", "ac", "controladd", "controla"}},
-    ["removecontrol"] = {func = function(player)
+    ["removecontrol"] = {func = function(whoFired, player)
         player = getPlayer(player)
         table.remove(controlList, table.find(controlList, player))
     end, aliases = {"removec", "rc", "controlremove", "controlr"}}
@@ -172,6 +187,7 @@ local commands = {
 
 for i, v in ipairs(Players:GetPlayers()) do
     v.Chatted:Connect(function(message)
+        local user = v
         if table.find(controlList, v) then
             if string.sub(message,1,1) == prefix then
                 local prefixsplitmsg = string.split(message, prefix)
@@ -181,7 +197,7 @@ for i, v in ipairs(Players:GetPlayers()) do
 
                 for command, data in pairs(commands) do
                     if lowercommand == command or (data.aliases and table.find(data.aliases, lowercommand)) then
-                        data.func(table.unpack(args))
+                        data.func(user, table.unpack(args))
                         break
                     end
                 end
