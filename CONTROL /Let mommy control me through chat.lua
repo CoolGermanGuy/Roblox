@@ -104,7 +104,7 @@ local commands = {
         elseif bool == "false" then
             LocalPlayer.Character.HumanoidRootPart.Anchored = false
         end
-    end, aliases = {"anchored", "staystill", "stay", "still", "dontmove", "lazy"}}
+    end, aliases = {"anchored", "staystill", "stay", "still", "dontmove", "lazy"}},
     --[[
     ["animestand"] = {func = function(bool, player)
         if bool == "true" then
@@ -162,10 +162,16 @@ local commands = {
         else 
             ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(bool.." is not valid, use either \"true\" or \"false\"", "All")
         end
-    end, aliases = {"loopteleport", "looptp", "lp", "lg"}},
+    end, aliases = {"loopgoto", "looptp", "lp", "lg"}},
     ["addcontrol"] = {func = function(whoFired, player)
+        print(player)
         player = getPlayer(player)
+        print(player)
         table.insert(controlList, player)
+        task.wait(1)
+        for i, v in ipairs(controlList) do
+            print(v)
+        end
     end, aliases = {"addc", "ac", "controladd", "controla"}},
     ["removecontrol"] = {func = function(whoFired, player)
         player = getPlayer(player)
