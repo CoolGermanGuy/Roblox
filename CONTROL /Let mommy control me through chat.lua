@@ -12,6 +12,7 @@ local controlList = {Players[selected]}
 loopteleport = false
 animestand = false
 stare = false
+BodyAngularVelocity = false
 
 function getArgs(splitmsg)
 	local inString = false
@@ -64,7 +65,7 @@ local commands = {
         LocalPlayer.Character.HumanoidRootPart.CFrame = whoFired.Character.HumanoidRootPart.CFrame
     end, aliases = {"bring", "come", "here"}},
     ["say"] = {func = function(whoFired, ...)
-        ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(table.concat({...}, " "), "All")
+        ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(table.concat({...}, " "), "normalchat")
     end, aliases = {"talk", "speak"}},
     ["jump"] = {func = function(whoFired)
         LocalPlayer.Character.Humanoid.Jump = true
@@ -86,7 +87,7 @@ local commands = {
         elseif bool == "false" then
             stare = false
         else 
-            ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(bool.." is not valid, use either \"true\" or \"false\"", "All")
+            ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(bool.." is not valid, use either \"true\" or \"false\"", "normalchat")
         end
     end, aliases = {"creep", "lookat"}},
     ["walkspeed"] = {func = function(whoFired, number)
@@ -125,7 +126,7 @@ local commands = {
         elseif bool == "false" then
             animestand = false
         else
-            ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(bool.." is not valid, use either \"true\" or \"false\"", "All")
+            ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(bool.." is not valid, use either \"true\" or \"false\"", "normalchat")
         end
     end, aliases = {"stand", "anime", "gay"}},
     ["fling"] = {func = function(player)
@@ -160,7 +161,7 @@ local commands = {
         elseif bool == "false" then
             loopteleport = false
         else 
-            ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(bool.." is not valid, use either \"true\" or \"false\"", "All")
+            ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Visit my GitHub \"CGGonGitHub\" to find out how to use commands", "normalchat")
         end
     end, aliases = {"loopgoto", "looptp", "lp", "lg"}},
     ["addcontrol"] = {func = function(whoFired, player)
@@ -176,11 +177,11 @@ local commands = {
     ["removecontrol"] = {func = function(whoFired, player)
         player = getPlayer(player)
         table.remove(controlList, table.find(controlList, player))
-    end, aliases = {"removec", "rc", "controlremove", "controlr"}}
+    end, aliases = {"removec", "rc", "controlremove", "controlr"}},
     --[[
-    ["allcontrol"] = func = {function(bool)
+    ["normalchatcontrol"] = func = {function(bool)
             if bool == "true" then
-                allcontrol = true
+                normalchatcontrol = true
                 for i, v in ipairs(Players:GetPlayers()) do
                     if v.Name ~= selected then
                         table.insert(controlList, v)
@@ -193,9 +194,32 @@ local commands = {
                     end
                 end
             else 
-                ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(bool.." is not valid, use either \"true\" or \"false\"", "All")
+                ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(bool.." is not valid, use either \"true\" or \"false\"", "normalchat")
         end, aliases = {"acontrol"}},
     ]]--
+    ["spin"] = {func = function(whoFired, bool, speed)
+        if bool == "true" then
+            if LocalPlayer.Character.HumanoidRootPart:FindFirstChild("SpinVelocityShit") then
+                LocalPlayer.Character.HumanoidRootPart:FindFirstChild("SpinVelocityShit"):Destroy()
+            end
+            local SpinSpeed = 20
+            if speed then
+                SpinSpeed = speed
+            end
+            local BodyAngularVelocity = Instance.new("BodyAngularVelocity")
+            BodyAngularVelocity.Name = "SpinVelocityShit"
+            BodyAngularVelocity.Parent = LocalPlayer.Character.HumanoidRootPart
+            BodyAngularVelocity.MaxTorque = Vector3.new(0, math.huge, 0)
+            BodyAngularVelocity.AngularVelocity = Vector3.new(0,SpinSpeed,0)
+        elseif bool == "false" then
+            if LocalPlayer.Character.HumanoidRootPart:FindFirstChild("SpinVelocityShit") then
+                LocalPlayer.Character.HumanoidRootPart:FindFirstChild("SpinVelocityShit"):Destroy()
+            end
+        else
+            
+        end
+        
+    end, aliases = {"turn", "around", "funny"}}
 }
 ------------------------------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------------------
@@ -222,12 +246,8 @@ for i, v in ipairs(Players:GetPlayers()) do
     end)
 end
 
-Players.PlayerAdded:Connect(function(player)
-    if allcontrol then
-        table.insert(controlList, player)
-    end
-end)
-
 
 LocalPlayer.Character.HumanoidRootPart.CFrame = Players[selected].Character.HumanoidRootPart.CFrame
-ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("At your service, "..Players[selected].DisplayName, "All")
+ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("At your service, "..Players[selected].DisplayName, "normalchat")
+task.wait(0.5)
+ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer("Visit my GitHub \"CGGonGitHub\" to find out how to use commands", "normalchat")
