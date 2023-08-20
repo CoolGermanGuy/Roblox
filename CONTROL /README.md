@@ -57,13 +57,13 @@ Bools can only be EITHER true OR false, they are used in programing as Toggles.
 In case of **<u>YES</u>** do **<u>true</u>**
 
 ```
-![command] true parameter2, parameter 3...
+![command] true [parameter2], [parameter 3]...
 ```
 
 In case of **<u>NO</u>** do **<u>false</u>**
 
 ```
-![command] false parameter2, parameter 3...
+![command] false [parameter2], [parameter 3]...
 ```
 
 | <u>**Command**</u> | <u>**Parameters**</u> | <u>**Usage**</u> | <u>**Aliases**</u> | <u>**Definition**</u> |
