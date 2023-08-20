@@ -1,4 +1,4 @@
-# Let mommy control me through chat
+## Let mommy control me through chat
 
 ##### A project by [CoolGermanGuy](https://www.roblox.com/users/1136054560/profile)
 
