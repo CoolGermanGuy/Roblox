@@ -18,7 +18,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/CGGonGitHub/Roblox/ma
 !command parameter1 parameter2 parameter3...
 ```
 
-## |------------------------------------ How to use PLAYER parameter --------------------------------|
+## |------------------------------------ How to use PLAYER parameter -------------------------------|
 
 Example: DisplayName
 
