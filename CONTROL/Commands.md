@@ -2,7 +2,7 @@
 
 ##### A project by [CoolGermanGuy](https://www.roblox.com/users/1136054560/profile)
 
-## /--------------------------------Loadstring --------------------------------\
+## /-----------------------------------------Loadstring -----------------------------------------------\
 
 ```lua
 loadstring(game:HttpGet("https://raw.githubusercontent.com/CGGonGitHub/Roblox/main/CONTROL%20/Let%20mommy%20control%20me%20through%20chat.lua"))()
