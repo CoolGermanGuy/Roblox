@@ -8,7 +8,7 @@
 loadstring(game:HttpGet("https://raw.githubusercontent.com/CGGonGitHub/Roblox/main/CONTROL%20/Let%20mommy%20control%20me%20through%20chat.lua"))()
 ```
 
-## |---------------------------------------- Command Usage ------------------------------------------|
+## |---------------------------------------- Command Usage -------------------------------------------|
 
 ```
 [prefix][command] [parameters]...
