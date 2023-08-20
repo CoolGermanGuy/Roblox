@@ -31,7 +31,7 @@ Example: Username
 ```
 !goto CGGonRoblox
 ```
-## |-------------------------------------- Basic Commands ------------------------------------------|
+## |---------------------------------------- Basic Commands ------------------------------------------|
 
 | <u>**Command**</u> | <u>**Parameters**</u> | <u>**Usage**</u> | <u>**Aliases**</u> | <u>**Definition**</u> |
 | --- | --- | --- | --- | --- |
@@ -44,7 +44,7 @@ Example: Username
 | gravity | number | !gravity 30 | grav | Makes the Gravity for THEM as high as NUMBER |
 | goto | Player | !goto CoolGermanGuy | tp, teleport | Makes THEM teleport to PLAYER |
 
-## |---------------------------------------- Bool Commands ------------------------------------------|
+## |----------------------------------------- Bool Commands ------------------------------------------|
 
 ###### *? What are bools*
 
