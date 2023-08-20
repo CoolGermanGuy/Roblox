@@ -8,7 +8,7 @@
 loadstring(game:HttpGet("https://raw.githubusercontent.com/CGGonGitHub/Roblox/main/CONTROL%20/Let%20mommy%20control%20me%20through%20chat.lua"))()
 ```
 
-## /---------------------------Command Usage----------------------------\
+## |------------------------------------------ Command Usage ---------------------------------------------|
 
 ```
 [prefix][command] [parameters]...
@@ -17,10 +17,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/CGGonGitHub/Roblox/ma
 ```
 !command parameter1 parameter2 parameter3...
 ```
-
-## /----------------------------! IMPORTANT !-------------------------------\
-
-### <u>How to use PLAYER:</u>
+## |------------------------------------- How to use PLAYER Parameter ------------------------------------|
 
 Example: DisplayName
 
@@ -33,8 +30,7 @@ Example: Username
 ```
 !goto CGGonRoblox
 ```
-
-## /--------------------------Basic Commands-----------------------------\
+## |------------------------------------------ Basic Commands --------------------------------------------|
 
 | <u>**Command**</u> | <u>**Parameters**</u> | <u>**Usage**</u> | <u>**Aliases**</u> | <u>**Definition**</u> |
 | --- | --- | --- | --- | --- |
@@ -47,7 +43,7 @@ Example: Username
 | gravity | number | !gravity 30 | grav | Makes the Gravity for THEM as high as NUMBER |
 | goto | Player | !goto CoolGermanGuy | tp, teleport | Makes THEM teleport to PLAYER |
 
-## /-----------------------------Bool Commands---------------------------\
+## |------------------------------------------ Bool Commands ---------------------------------------------|
 
 ###### *? What are bools*
 
@@ -74,8 +70,8 @@ In case of **<u>NO</u>** do **<u>false</u>**
 | stare | bool, Player | !stare true CoolGermanGuy | creep, lookat | Makes THEM always look at PLAYER by rotating their character to PLAYER |
 | anchor | bool | !anchor true | anchored, staystill, stay, still, dontmove, lazy | Makes THEM unable to move and stuck in the pose they are in |
 | loopgoto | bool, Player | !loopgoto true CoolGermanGuy | loopteleport, looptp, lp, lg | Makes THEM always teleport to PLAYER |
-
-## /----------------------Let others control too-------------------------\
+## |------------------------------------------ Command Usage ---------------------------------------------|
+## |----------------------------------- How to let others control too ------------------------------------|
 
 | <u>**Command**</u> | <u>**Parameters**</u> | <u>**Usage**</u> | <u>**Aliases**</u> | <u>**Definition**</u> |
 | --- | --- | --- | --- | --- |
