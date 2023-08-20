@@ -60,7 +60,7 @@ alivePlayers = {}
 function findSheriff()
 	if alivePlayers[1] then
 		for i, v in ipairs(alivePlayers) do
-			if v.Backpack:FindFirstChild('Gun') or v.Character:FindFirstChild('Gun') then -- sheriff
+			if v.Backpack and v.Backpack:FindFirstChild('Gun') or v.Character and v.Character:FindFirstChild('Gun') then -- sheriff
 				sheriff = v.Name
 				if sheriff == LocalPlayer.Name then -- if YOU are the sheriff
 					HighlightCollection[v.Name].OutlineColor = Color3.fromRGB(0,0,255)
