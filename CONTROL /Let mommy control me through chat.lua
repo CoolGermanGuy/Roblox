@@ -1,4 +1,4 @@
-local selected = "CGGonRoblox"
+local selected = game:GetService("Players").LocalPlayer.Name
 local prefix = "!"
 
 
