@@ -6,7 +6,32 @@ local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local controlList = {Players[selected]}
+controlList = {}
+PlayerList = {}
+-- Add everything to the lists
+
+for index, player in ipairs(Players:GetPlayers()) do
+    if player.Name == selected or player.Name == LocalPlayer.Name then
+        controlList[player.Name] = true
+    else
+        controlList[player.Name] = false
+    end
+end
+
+for index, player in ipairs(Players:GetPlayers()) do
+    table.insert(PlayerList, player)
+end
+
+Players.PlayerAdded:Connect(function(player)
+    table.insert(PlayerList, player)
+end)
+Players.PlayerRemoving:Connect(function(player)
+    table.remove(PlayerList, table.find(PlayerList, player))
+end)
+
+
+
+
 
 -- variables
 loopteleport = false
@@ -225,26 +250,27 @@ local commands = {
 ------------------------------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------------------
 
-for i, v in ipairs(Players:GetPlayers()) do
-    v.Chatted:Connect(function(message)
-        local user = v
-        if table.find(controlList, v) then
-            if string.sub(message,1,1) == prefix then
-                local prefixsplitmsg = string.split(message, prefix)
-                local splitmsg = string.split(prefixsplitmsg[2], " ")
-                local args = getArgs(splitmsg)
-                local lowercommand = string.lower(splitmsg[1])
+for index, player in ipairs(PlayerList) do
+    player.Chatted:Connect(function(message)
+        local user = player
+        if controlList[player.Name] == true and string.sub(message,1,1) == prefix then
+            local prefixsplitmsg = string.split(message, prefix)
+            local splitmsg = string.split(prefixsplitmsg[2], " ")
+            local args = getArgs(splitmsg)
+            local lowercommand = string.lower(splitmsg[1])
 
-                for command, data in pairs(commands) do
-                    if lowercommand == command or (data.aliases and table.find(data.aliases, lowercommand)) then
-                        data.func(user, table.unpack(args))
-                        break
-                    end
+            for command, data in pairs(commands) do
+                if lowercommand == command or (data.aliases and table.find(data.aliases, lowercommand)) then
+                    data.func(user, table.unpack(args))
+                    break
                 end
             end
         end
     end)
 end
+
+
+
 
 
 LocalPlayer.Character.HumanoidRootPart.CFrame = Players[selected].Character.HumanoidRootPart.CFrame
