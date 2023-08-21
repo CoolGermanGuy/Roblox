@@ -16,16 +16,15 @@ for index, player in ipairs(Players:GetPlayers()) do
     else
         controlList[player.Name] = false
     end
-end
-
-for index, player in ipairs(Players:GetPlayers()) do
     table.insert(PlayerList, player)
 end
 
 Players.PlayerAdded:Connect(function(player)
+    controlList[player.Name] = false
     table.insert(PlayerList, player)
 end)
 Players.PlayerRemoving:Connect(function(player)
+    controlList[player.Name] = nil
     table.remove(PlayerList, table.find(PlayerList, player))
 end)
 
@@ -190,18 +189,12 @@ local commands = {
         end
     end, aliases = {"loopgoto", "looptp", "lp", "lg"}},
     ["addcontrol"] = {func = function(whoFired, player)
-        print(player)
         player = getPlayer(player)
-        print(player)
-        table.insert(controlList, player)
-        task.wait(1)
-        for i, v in ipairs(controlList) do
-            print(v)
-        end
+        controlList[player.Name] = true
     end, aliases = {"addc", "ac", "controladd", "controla"}},
     ["removecontrol"] = {func = function(whoFired, player)
         player = getPlayer(player)
-        table.remove(controlList, table.find(controlList, player))
+        controlList[player.Name] = false
     end, aliases = {"removec", "rc", "controlremove", "controlr"}},
     --[[
     ["normalchatcontrol"] = func = {function(bool)
