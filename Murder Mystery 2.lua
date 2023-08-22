@@ -222,6 +222,7 @@ end)
 workspace.DescendantAdded:Connect(function(Instance)
     task.wait(0.01)
     if Instance.Name == "GunDrop" and not deadBool then
+        sheriff = nil
         gundropHighlight.Parent = Instance
 
         GunDropLine.Visible = true
@@ -237,6 +238,7 @@ workspace.DescendantRemoving:Connect(function(Instance) -- SETTING NEW SHERIFF D
             GunDropCFrame = nil
             GunDropLine.Visible = false
             repeat findSheriff() until sheriff
+            print(sheriff)
         end
     end
 end)
@@ -349,17 +351,6 @@ ReplicatedStorage.Remotes.Gameplay.RoundEndFade.OnClientEvent:Connect(function()
         value.Color = Color3.fromRGB(0,0,0)
         value.Visible = false
     end
-end)
-
-ReplicatedStorage.Remotes.Gameplay.VictoryScreen.OnClientEvent:Connect(function()
-    --[[
-    GunDropCFrame = nil
-    GunDropVec3 = nil
-    GunDropLine.Visible = false
-    for i = 1, #alivePlayers do
-        table.remove(alivePlayers, i)
-    end
-    ]]
 end)
 
 ReplicatedStorage.Remotes.Gameplay.RoleSelect.OnClientEvent:Connect(function()
