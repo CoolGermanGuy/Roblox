@@ -4,7 +4,6 @@ setfpscap(0)
 murder_sherrif_esp_key = "P"
 gun_and_back_key = "C"
 gun_key = "B"
-find_gun_key = "Y"
 fake_lag_key = "F"
 walkspeed_19 = "R"
 walkspeed_16 = "T"
