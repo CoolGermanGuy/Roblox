@@ -22,17 +22,21 @@ BackgroundFrameUICorner.Parent = BackgroundFrame
 BackgroundFrame.Parent = ScreenGui
 
 local HolderFrame = Instance.new("Frame") -- create HolderFrame
+HolderFrame.Name = "HolderFrame"
 local UIGridLayout = Instance.new("UIGridLayout") -- manages player UI
 UIGridLayout.CellPadding = UDim2.new(0, 10, 0, 7)
 UIGridLayout.CellSize = UDim2.new(0.5, -5, 0, 50)
 UIGridLayout.Parent = HolderFrame
 
-for i = 0, 12, 1 do -- add UI for each player
+for i = 1, 12, 1 do -- add UI for each player
     local PlayerFrame = Instance.new("Frame")
+    PlayerFrame.Name = "PlayerFrame"..i
     PlayerFrame.BackgroundColor3 = Color3.fromRGB(94,94,94)
     local PlayerFrameUICorner = Instance.new("UICorner")
     PlayerFrameUICorner.CornerRadius = UDim.new(0, 8)
     PlayerFrameUICorner.Parent = PlayerFrame
+
+    PlayerFrame.Parent = HolderFrame
 end
 HolderFrame.Parent = BackgroundFrame
 
