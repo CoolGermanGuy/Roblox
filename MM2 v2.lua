@@ -13,7 +13,7 @@ local BackgroundFrame = Instance.new("Frame") -- create BackgroundFrame
 BackgroundFrame.Name = "BackgroundFrame"
 BackgroundFrame.BackgroundColor3 = Color3.fromRGB(38, 38, 38) 
 local BackgroundFrameUICorner = Instance.new("UICorner")
-BackgroundFrameUICorner.CornerRadius.Offset = 10
+BackgroundFrameUICorner.CornerRadius = UDim2.new(0, 10)
 BackgroundFrameUICorner.Parent = BackgroundFrame
 BackgroundFrame.Parent = ScreenGui
 
@@ -27,6 +27,7 @@ for i = 0, 12, 1 do -- add UI for each player
     local PlayerFrame = Instance.new("Frame")
     PlayerFrame.BackgroundColor = Color3.fromRGB(94,94,94)
     local PlayerFrameUICorner = Instance.new("UICorner")
+    PlayerFrameUICorner.CornerRadius = UDim2.new(0, 8)
     PlayerFrameUICorner.Parent = PlayerFrame
 end
 HolderFrame.Parent = BackgroundFrame
