@@ -11,7 +11,11 @@ ScreenGui.Parent = LocalPlayer.PlayerGui
 
 local BackgroundFrame = Instance.new("Frame") -- create BackgroundFrame
 BackgroundFrame.Name = "BackgroundFrame"
-BackgroundFrame.BackgroundColor3 = Color3.fromRGB(38, 38, 38) 
+BackgroundFrame.BackgroundColor3 = Color3.fromRGB(38, 38, 38)
+BackgroundFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+BackgroundFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+BackgroundFrame.Size = UDim2.new(0, 660, 0, 354)
+BackgroundFrame.Draggable = true
 local BackgroundFrameUICorner = Instance.new("UICorner")
 BackgroundFrameUICorner.CornerRadius = UDim.new(0, 10)
 BackgroundFrameUICorner.Parent = BackgroundFrame
@@ -31,3 +35,5 @@ for i = 0, 12, 1 do -- add UI for each player
     PlayerFrameUICorner.Parent = PlayerFrame
 end
 HolderFrame.Parent = BackgroundFrame
+
+print("CoolGermanGuy's MM2 Script v2 executed!")
